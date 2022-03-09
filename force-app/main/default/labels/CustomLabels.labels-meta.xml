@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
     <labels>
-        <fullName>Label 1</fullName>
+        <fullName>Label_1</fullName>
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>New_Custom_label</shortDescription>
         <value>Label-1</value>
     </labels>
     <labels>
-        <fullName>Label 2</fullName>
+        <fullName>Label_2</fullName>
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>New_Custom_label_2</shortDescription>
         <value>Label-2</value>
     </labels>
     <labels>
-        <fullName>Label 3</fullName>
+        <fullName>Label_3</fullName>
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>New_Custom_label_2</shortDescription>
         <value>Label-3</value>
     </labels>
     <labels>
-        <fullName>Label 4</fullName>
+        <fullName>Label_4</fullName>
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>New_Custom_label_2</shortDescription>
