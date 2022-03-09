@@ -1,6 +1,5 @@
-//Hello 12345
-//Hello Again 123
-//Hello Again 12345
+//Hello 
+
 public with sharing class MyClass {
 	public MyClass() {
 
