@@ -5,7 +5,7 @@
     <description>New_Field</description>
     <externalId>false</externalId>
     <inlineHelpText>Checkbox</inlineHelpText>
-    <label>New_Custom_label for test</label>
+    <label>New_Custom_field for test</label>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>
