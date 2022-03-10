@@ -18,14 +18,14 @@
         <fullName>Label_3</fullName>
         <language>en_US</language>
         <protected>true</protected>
-        <shortDescription>New_Custom_label_2</shortDescription>
+        <shortDescription>New_Custom_label_3</shortDescription>
         <value>Label-3</value>
     </labels>
     <labels>
         <fullName>Label_4</fullName>
         <language>en_US</language>
         <protected>true</protected>
-        <shortDescription>New_Custom_label_2</shortDescription>
+        <shortDescription>New_Custom_label_4</shortDescription>
         <value>Label-4</value>
     </labels>
 </CustomLabels>
