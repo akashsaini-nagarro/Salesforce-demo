@@ -2,7 +2,6 @@ public with sharing class BatchLeadConvert implements Database.Batchable<SObject
     // Welcome to JenkinsSFDXProject.
     //Hello!!
     
-    //Nikhil.
 
     private final String CONVERTED_STATUS = [SELECT Id, MasterLabel FROM LeadStatus WHERE IsConverted=true LIMIT 1].MasterLabel;
 

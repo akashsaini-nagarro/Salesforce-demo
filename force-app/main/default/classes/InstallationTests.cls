@@ -1,5 +1,5 @@
 //Hello
-//Hello Again 123
+//Hello Again
 /* 
  * This class can be safely deleted from your org. 
  * It was only used to ensure 100% test coverage
