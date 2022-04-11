@@ -234,7 +234,7 @@ node {
                         {
                             println "You selected Validate Only, so only validation will be performed."
                             rc = command "${toolbelt}/sfdx force:source:convert -d ../${DEPLOYDIR}"
-							
+							bat "copy destructiveChanges.xml ..\\${DEPLOYDIR}"
 							if (rc != 0) 
 							{
 								currentBuild.result = "FAILED"
