@@ -11,7 +11,6 @@ node {
 	def SF_CONSUMER_KEY = env.SF_CONSUMER_KEY_DEV
 	def SF_USERNAME = env.SF_USERNAME_DEV
 	def PreviousCommitId = env.GIT_PREVIOUS_SUCCESSFUL_COMMIT
-    echo ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}
     def LatestCommitId = 'HEAD'
     def Environment = 'DEV'
     def Deployment_Type = 'Validate Only'
