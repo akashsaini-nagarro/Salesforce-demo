@@ -14,7 +14,7 @@ node {
     def LatestCommitId = 'HEAD'
     def Environment = 'DEV'
     def Deployment_Type = 'Validate Only'
-    def TESTLEVEL = 'NoTestRun'
+    /*def TESTLEVEL = 'NoTestRun'*/
     def Branch = 'dev'
 
 
@@ -39,7 +39,7 @@ node {
     stage('checkout source') {
 		try
 		{
-		   git branch: dev, url: 'https://github.com/akashsaini-nagarro/Salesforce-demo.git'
+		   git branch: 'dev', url: 'https://github.com/akashsaini-nagarro/Salesforce-demo.git'
 		} catch (Exception e) {
 		currentBuild.result = "FAILED"
 		println('Error in checking out the code from Git repository.')
