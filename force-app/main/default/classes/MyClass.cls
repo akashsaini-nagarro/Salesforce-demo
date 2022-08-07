@@ -1,6 +1,6 @@
 //Hello Akash
 
-public with sharing class MyClass {
+//public with sharing class MyClass {
 	public MyClass() {
 
 	}
