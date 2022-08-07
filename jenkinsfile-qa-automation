@@ -10,7 +10,7 @@ node {
 	def SERVER_KEY_CREDENTIALS_ID = env.("SERVER_KEY_CREDENTIALS_ID_" + "${params.Environment}")
 	def SF_CONSUMER_KEY = env.("SF_CONSUMER_KEY_" + "${params.Environment}")
 	def SF_USERNAME = env.("SF_USERNAME_" + "${params.Environment}")
-	def PreviousCommitId = $(env.GIT_PREVIOUS_SUCCESSFUL_COMMIT)
+	def PreviousCommitId = env.GIT_PREVIOUS_SUCCESSFUL_COMMIT
     echo ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}
     def LatestCommitId = 'HEAD'
     def Environment = 'DEV'
