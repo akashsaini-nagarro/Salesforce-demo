@@ -26,10 +26,10 @@ node {
         catch (Exception e) {
 		currentBuild.result = "FAILED"
 		println('Unable to Clean WorkSpace.')
-		emailext (attachLog: false, 
+		/*emailext (attachLog: false, 
 		body: 'Error: Unable to Clean WorkSpace. \n\nPrevious Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
 		subject: '$DEFAULT_SUBJECT', 
-		to: '$DEFAULT_RECIPIENTS')
+		to: '$DEFAULT_RECIPIENTS')*/
 		throw e       
         }
     }
@@ -44,10 +44,10 @@ node {
 		} catch (Exception e) {
 		currentBuild.result = "FAILED"
 		println('Error in checking out the code from Git repository.')
-		emailext (attachLog: false, 
+		/*emailext (attachLog: false, 
 		body: 'Error: Error in checking out the code from Git repository. \n\nPrevious Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
 		subject: '$DEFAULT_SUBJECT', 
-		to: '$DEFAULT_RECIPIENTS')
+		to: '$DEFAULT_RECIPIENTS')*/
 		throw e  
 		}
 	}
@@ -71,10 +71,10 @@ node {
 			{
 				currentBuild.result = "FAILED"
 				
-				emailext (attachLog: false, 
+				/*emailext (attachLog: false, 
 				body: 'Error: Salesforce org authorization failed. \n\nPrevious Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
 				subject: '$DEFAULT_SUBJECT', 
-				to: '$DEFAULT_RECIPIENTS')
+				to: '$DEFAULT_RECIPIENTS')*/
 				
 				error 'Salesforce org authorization failed.'
 		    }
@@ -90,10 +90,10 @@ node {
                 if (rc != 0) 
 				{
 					currentBuild.result = "FAILED"
-					emailext (attachLog: false, 
+					/*emailext (attachLog: false, 
 					body: 'Error: Unable to generate Delta changes. \n\nPrevious Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
 					subject: '$DEFAULT_SUBJECT', 
-					to: '$DEFAULT_RECIPIENTS')
+					to: '$DEFAULT_RECIPIENTS')*/
 					error 'Unable to generate Delta changes.'
 				} 
 				def folder = fileExists 'DeltaChanges/force-app'
@@ -108,10 +108,10 @@ node {
 						if (rc != 0) 
 						{
 							currentBuild.result = "FAILED"
-							emailext (attachLog: false, 
+							/*emailext (attachLog: false, 
 							body: 'Error: Failed to convert metadata in mdapi format. \n\nPrevious Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
 							subject: '$DEFAULT_SUBJECT', 
-							to: '$DEFAULT_RECIPIENTS')
+							to: '$DEFAULT_RECIPIENTS')*/
 							error 'Failed to convert metadata in mdapi format.'
 						}
 					}
@@ -130,10 +130,10 @@ node {
 							if (rc != 0) 
 							{
 								currentBuild.result = "FAILED"
-								emailext (attachLog: false, 
+								/*emailext (attachLog: false, 
 								body: 'Error: Failed to convert metadata in mdapi format. \n\nPrevious Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
 								subject: '$DEFAULT_SUBJECT', 
-								to: '$DEFAULT_RECIPIENTS')
+								to: '$DEFAULT_RECIPIENTS')*/
 								error 'Failed to convert metadata in mdapi format.'
 							}
 
@@ -162,11 +162,11 @@ node {
 						currentBuild.result = "FAILED"
 						dir("${WORKSPACE}/${DEPLOYDIR}")
 						{
-						emailext (attachLog: false, 
+						/*emailext (attachLog: false, 
 						attachmentsPattern: 'package.xml, destructiveChanges.xml',
 						body: 'Error: Metadata Validation Failed. \n\nPrevious Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
 						subject: '$DEFAULT_SUBJECT', 
-						to: '$DEFAULT_RECIPIENTS')
+						to: '$DEFAULT_RECIPIENTS')*/
 						
 						error 'Metadata Validation Failed.'
 						}
@@ -193,11 +193,11 @@ node {
 						currentBuild.result = "FAILED"
 						dir("${WORKSPACE}/${DEPLOYDIR}")
 						{
-						emailext (attachLog: false, 
+						/*emailext (attachLog: false, 
 						attachmentsPattern: 'package.xml, destructiveChanges.xml',
 						body: 'Error: Metadata Deployment Failed. \n\nPrevious Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
 						subject: '$DEFAULT_SUBJECT', 
-						to: '$DEFAULT_RECIPIENTS')
+						to: '$DEFAULT_RECIPIENTS')*/
 						
 						error 'Metadata Deployment Failed.'
 						}
@@ -211,11 +211,11 @@ node {
 
 				dir("${WORKSPACE}/${DEPLOYDIR}")
 				{
-					emailext (attachLog: false, 
+					/*emailext (attachLog: false, 
 					attachmentsPattern: 'package.xml',
 					body: 'Previous Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\n\n Metadata Deployment Successful. \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
 					subject: '$DEFAULT_SUBJECT', 
-					to: '$DEFAULT_RECIPIENTS')
+					to: '$DEFAULT_RECIPIENTS')*/
 					
 				}
 			
