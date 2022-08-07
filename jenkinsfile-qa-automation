@@ -6,10 +6,10 @@ node {
 	def DEPLOYDIR = 'toDeploy'
 	def APIVERSION = '54.0'
     def toolbelt = tool 'toolbelt'
-	def SF_INSTANCE_URL = env.("SF_INSTANCE_URL_" + "${params.Environment}")
-	def SERVER_KEY_CREDENTIALS_ID = env.("SERVER_KEY_CREDENTIALS_ID_" + "${params.Environment}")
-	def SF_CONSUMER_KEY = env.("SF_CONSUMER_KEY_" + "${params.Environment}")
-	def SF_USERNAME = env.("SF_USERNAME_" + "${params.Environment}")
+	def SF_INSTANCE_URL = env.SF_INSTANCE_URL_DEV
+	def SERVER_KEY_CREDENTIALS_ID = env.SERVER_KEY_CREDENTIALS_ID_DEV
+	def SF_CONSUMER_KEY = env.SF_CONSUMER_KEY_DEV
+	def SF_USERNAME = env.SF_USERNAME_DEV
 	def PreviousCommitId = env.GIT_PREVIOUS_SUCCESSFUL_COMMIT
     echo ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}
     def LatestCommitId = 'HEAD'
@@ -18,67 +18,6 @@ node {
     def TESTLEVEL = 'NoTestRun'
     def Branch = 'dev'
 
-	try 
-	{
-		if ((params.PreviousCommitId != '') && (params.LatestCommitId != ''))
-			println('')
-		else throw new Exception()
-			//error("Please enter both Previous and Latest commit IDs")
-	} catch (Exception e) {
-		currentBuild.result = "FAILED"
-		println('Please enter both Previous and Latest commit IDs')
-		emailext (attachLog: false, 
-		body: 'Error: Please enter both Previous and Latest commit IDs. \n\n\nPrevious Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
-		subject: '$DEFAULT_SUBJECT', 
-		to: '$DEFAULT_RECIPIENTS')
-		throw e
-	}
-	
-
-	//----------------------------------------------------------------------
-	//Check if Previous and Latest commit IDs are same.
-	//----------------------------------------------------------------------
-	
-	try
-	{
-		if (params.PreviousCommitId != params.LatestCommitId)
-			println('')
-		else throw new Exception()	
-		//error("Previous and Latest Commit IDs can not be same.")
-	} catch (Exception e) {
-		currentBuild.result = "FAILED"
-		println('Previous and Latest commit id can not be same.')
-		emailext (attachLog: false, 
-		body: 'Error: Previous and Latest commit id can not be same. \n\nPrevious Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
-		subject: '$DEFAULT_SUBJECT', 
-		to: '$DEFAULT_RECIPIENTS')
-		throw e
-	}
-
-	
-	//----------------------------------------------------------------------
-	//Check if Test classes are mentioned in case of RunSpecifiedTests.
-	//----------------------------------------------------------------------
-		
-	if (TESTLEVEL=='RunSpecifiedTests')
-	{
-		try
-		{
-			if (params.SpecifyTestClass != '')
-				println('')
-			else throw new Exception()	
-			//error("Please Specify Test classes.")
-		}catch (Exception e) {
-		currentBuild.result = "FAILED"
-		println('SpecifyTestClass cannot be empty while running specified tests.')
-		emailext (attachLog: false, 
-		body: 'Error: SpecifyTestClass can not be empty while running specified tests. \n\nPrevious Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
-		subject: '$DEFAULT_SUBJECT', 
-		to: '$DEFAULT_RECIPIENTS')
-		throw e
-		}
-	}
-	
 
     stage('Clean Workspace') {
         try {
@@ -186,25 +125,6 @@ node {
 				{
 					dir("${WORKSPACE}/${DELTACHANGES}")
 					{
-						println "Force-app folder exist, destructiveChanges.xml exist"
-						if (Deployment_Type=='Deploy Only')
-						{
-							println "You selected deploy only so deleting destructivechanges.xml to avoid component deletion."
-							bat "del /f destructiveChanges.xml"
-							rc = command "${toolbelt}/sfdx force:source:convert -d ../${DEPLOYDIR}"
-							if (rc != 0) 
-							{
-								currentBuild.result = "FAILED"
-								emailext (attachLog: false, 
-								body: 'Error: Failed to convert metadata in mdapi format. \n\nPrevious Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
-								subject: '$DEFAULT_SUBJECT', 
-								to: '$DEFAULT_RECIPIENTS')
-								error 'Failed to convert metadata in mdapi format.'
-							}
-						}
-						else if (Deployment_Type=='Delete and Deploy')
-						{
-							println "Both deletion and deployment will be performed."
 							rc = command "${toolbelt}/sfdx force:source:convert -d ../${DEPLOYDIR}"
 							bat "copy destructiveChanges.xml ..\\${DEPLOYDIR}"
 							if (rc != 0) 
@@ -217,39 +137,12 @@ node {
 								error 'Failed to convert metadata in mdapi format.'
 							}
 
-						}
-						else if (Deployment_Type=='Delete Only')
-						{
-							println "You selected Delete only but force-app folder also exist. So deleting the force-app folder to avoid deployment."
-							bat "echo y | rmdir /s force-app"
-							bat "copy ..\\manifest\\package.xml ."
-						}
-						else if (Deployment_Type=='Validate Only')
-                        {
-                            println "You selected Validate Only, so only validation will be performed."
-                            rc = command "${toolbelt}/sfdx force:source:convert -d ../${DEPLOYDIR}"
-							bat "copy destructiveChanges.xml ..\\${DEPLOYDIR}"
-							if (rc != 0) 
-							{
-								currentBuild.result = "FAILED"
-								emailext (attachLog: false, 
-								body: 'Error: Failed to convert metadata in mdapi format. \n\nPrevious Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
-								subject: '$DEFAULT_SUBJECT', 
-								to: '$DEFAULT_RECIPIENTS')
-								error 'Failed to convert metadata in mdapi format.'
-							}
-                        }
 					}
+						
+                        
+					
 				}
-				else 
-				{
-					currentBuild.result = "FAILED"
-					emailext (attachLog: false, 
-					body: 'Error: There are no changes between the provided commit IDs that can be deployed or deleted. \n\nPrevious Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
-					subject: '$DEFAULT_SUBJECT', 
-					to: '$DEFAULT_RECIPIENTS')
-					error "There are no changes between the provided commit IDs that can be deployed or deleted."
-				}
+				
                
             }
         }
@@ -258,29 +151,12 @@ node {
 
 		stage('Validate Only') 
 		{
-			if (Deployment_Type=='Validate Only')
-			{
+			
 				script
 				{
-				
-					if (TESTLEVEL=='NoTestRun') 
-					{
-						println TESTLEVEL
-						rc = command "${toolbelt}/sfdx force:mdapi:deploy -d ${DEPLOYDIR} --checkonly --wait 10 --targetusername ${SF_USERNAME} "
-					}
-					else if (TESTLEVEL=='RunLocalTests') 
-					{
-						println TESTLEVEL
-						rc = command "${toolbelt}/sfdx force:mdapi:deploy -d ${DEPLOYDIR} --checkonly --wait 10 --targetusername ${SF_USERNAME} --testlevel ${TESTLEVEL} --verbose --loglevel fatal"
-					}
-					else if (TESTLEVEL=='RunSpecifiedTests')
-					{
-						println TESTLEVEL
-						def Testclass = SpecifyTestClass.replaceAll('\\s','')
-						println Testclass
-						rc = command "${toolbelt}/sfdx force:mdapi:deploy -d ${DEPLOYDIR} --checkonly --wait 10 --targetusername ${SF_USERNAME} --testlevel ${TESTLEVEL} -r ${Testclass} --verbose --loglevel fatal"
-					}
-   
+					rc = command "${toolbelt}/sfdx force:mdapi:deploy -d ${DEPLOYDIR} --checkonly --wait 10 --targetusername ${SF_USERNAME} "
+				}
+					
 					if (rc != 0) 
 					{
 						currentBuild.result = "FAILED"
@@ -295,8 +171,8 @@ node {
 						error 'Metadata Validation Failed.'
 						}
 					} 
-				}
-			}
+				
+				
    		}
 		
 
@@ -305,29 +181,12 @@ node {
 		// -------------------------------------------------------------------------
 		
 
-		stage('Deploy and Run Tests') 
-		{
-			if (Deployment_Type=='Deploy Only')
-			{	
+		stage('Deploy Components') 
+		{	
 				script
 				{
-					if (TESTLEVEL=='NoTestRun') 
-					{
-						println TESTLEVEL
-						rc = command "${toolbelt}/sfdx force:mdapi:deploy -d ${DEPLOYDIR} --wait 10 --targetusername ${SF_USERNAME} "
-					}
-					else if (TESTLEVEL=='RunLocalTests') 
-					{
-						println TESTLEVEL
-						rc = command "${toolbelt}/sfdx force:mdapi:deploy -d ${DEPLOYDIR} --wait 10 --targetusername ${SF_USERNAME} --testlevel ${TESTLEVEL} --verbose --loglevel fatal"
-					}
-					else if (TESTLEVEL=='RunSpecifiedTests') 
-					{
-						println TESTLEVEL
-						def Testclass = SpecifyTestClass.replaceAll('\\s','')
-						println Testclass						
-						rc = command "${toolbelt}/sfdx force:mdapi:deploy -d ${DEPLOYDIR} --wait 10 --targetusername ${SF_USERNAME} --testlevel ${TESTLEVEL} -r ${Testclass} --verbose --loglevel fatal"
-					}
+					rc = command "${toolbelt}/sfdx force:mdapi:deploy -d ${DEPLOYDIR} --wait 10 --targetusername ${SF_USERNAME} "
+				}
 					
 					if (rc != 0) 
 					{
@@ -342,96 +201,14 @@ node {
 						
 						error 'Metadata Deployment Failed.'
 						}
-					} 
-
-				}
-			}
+					} 		
 		}
 
-		stage('Delete Components') 
-		{
-			if (Deployment_Type=='Delete Only')
-			{
-				rc = command "${toolbelt}/sfdx force:mdapi:deploy -u ${SF_USERNAME} -d ${DELTACHANGES} -w 1"	
-					if (rc != 0) 
-					{
-						currentBuild.result = "FAILED"
-						dir("${WORKSPACE}/${DELTACHANGES}")
-						{
-						emailext (attachLog: false, 
-						attachmentsPattern: 'destructiveChanges.xml',
-						body: 'Error: Component deletion Failed. \n\nPrevious Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \n\nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
-						subject: '$DEFAULT_SUBJECT', 
-						to: '$DEFAULT_RECIPIENTS')
-						
-						error 'Component deletion Failed.'
-						}
-					}
-			}
-
-		}
-
-		stage('Delete and Deploy') 
-		{
-			if (Deployment_Type=='Delete and Deploy')
-			{
-				script
-				{
-					if (TESTLEVEL=='NoTestRun') 
-					{
-						println TESTLEVEL
-						rc = command "${toolbelt}/sfdx force:mdapi:deploy -d ${DEPLOYDIR} --wait 10 --targetusername ${SF_USERNAME} "
-					}
-					else if (TESTLEVEL=='RunLocalTests') 
-					{
-						println TESTLEVEL
-						rc = command "${toolbelt}/sfdx force:mdapi:deploy -d ${DEPLOYDIR} --wait 10 --targetusername ${SF_USERNAME} --testlevel ${TESTLEVEL} --verbose --loglevel fatal"
-					}
-					else if (TESTLEVEL=='RunSpecifiedTests') 
-					{
-						println TESTLEVEL
-						def Testclass = SpecifyTestClass.replaceAll('\\s','')
-						println Testclass						
-						rc = command "${toolbelt}/sfdx force:mdapi:deploy -d ${DEPLOYDIR} --wait 10 --targetusername ${SF_USERNAME} --testlevel ${TESTLEVEL} -r ${Testclass} --verbose --loglevel fatal"
-					}
-
-					if (rc != 0) 
-					{
-						currentBuild.result = "FAILED"
-						dir("${WORKSPACE}/${DEPLOYDIR}")
-						{
-						emailext (attachLog: false, 
-						attachmentsPattern: 'package.xml, destructiveChanges.xml',
-						body: 'Error: Metadata Deployment Failed. \n\nPrevious Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
-						subject: '$DEFAULT_SUBJECT', 
-						to: '$DEFAULT_RECIPIENTS')
-						
-						error 'Metadata Deployment Failed.'
-						}
-					} 
- 
-				}
-				
-			}
-		}
-	
+		
 		stage('EMail Notification')
 		{
 			bat 'chdir'
-			if (Deployment_Type=='Delete Only')
-			{
-				dir("${WORKSPACE}/${DELTACHANGES}")
-				{
-					emailext (attachLog: false, 
-					attachmentsPattern: 'destructiveChanges.xml',
-					body: 'Previous Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\n\n Component deleted successfully. \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
-					subject: '$DEFAULT_SUBJECT', 
-					to: '$DEFAULT_RECIPIENTS')
-						
-				}
-			}
-			else if(Deployment_Type=='Deploy Only')
-			{
+
 				dir("${WORKSPACE}/${DEPLOYDIR}")
 				{
 					emailext (attachLog: false, 
@@ -441,20 +218,8 @@ node {
 					to: '$DEFAULT_RECIPIENTS')
 					
 				}
-			}
-			else
-			{
-				dir("${WORKSPACE}/${DEPLOYDIR}")
-				{
-					emailext (attachLog: false, 
-					attachmentsPattern: 'package.xml, destructiveChanges.xml',
-					body: 'Previous Commit ID : $PreviousCommitId \nLatest Commit ID : $LatestCommitId \nDeployment Type : $Deployment_Type \nTest Level :  $TESTLEVEL \nCreated by : $BUILD_USER \nEnvironment : $Environment \nBranch : $Branch \nBuild Status : $BUILD_STATUS! \n\n\n Metadata Validation/Deployment Successful. \n\nClick on below link after connecting to Garnet VPN to view build results. \n\n$BUILD_URL/console', 
-					subject: '$DEFAULT_SUBJECT', 
-					to: '$DEFAULT_RECIPIENTS')
-						
-				
-				}
-			}
+			
+			
 		}
 	
 	
