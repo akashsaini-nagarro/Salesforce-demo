@@ -18,18 +18,6 @@ node {
     def TESTLEVEL = 'NoTestRun'
     def Branch = 'dev'
 
-
-	properties([parameters([string(defaultValue: 'HEAD~1', name: 'PreviousCommitId'), string(defaultValue: 'HEAD', name: 'LatestCommitId'), [$class: 'ChoiceParameter', choiceType: 'PT_SINGLE_SELECT', filterLength: 1, filterable: false, name: 'Environment', randomName: 'choice-parameter-6967708829400', script: [$class: 'GroovyScript', fallbackScript: [classpath: [], sandbox: false, script: ''], script: [classpath: [], sandbox: false, script: 'return[\'DEV:selected\',\'QA\',\'UAT\']']]], [$class: 'ChoiceParameter', choiceType: 'PT_SINGLE_SELECT', filterLength: 1, filterable: false, name: 'Deployment_Type', randomName: 'choice-parameter-6967713515900', script: [$class: 'GroovyScript', fallbackScript: [classpath: [], sandbox: false, script: ''], script: [classpath: [], sandbox: false, script: 'return[\'Validate Only:selected\',\'Deploy Only\',\'Delete Only\',\'Delete and Deploy\']']]], [$class: 'CascadeChoiceParameter', choiceType: 'PT_SINGLE_SELECT', filterLength: 1, filterable: false, name: 'TESTLEVEL', randomName: 'choice-parameter-6967717555900', referencedParameters: 'Deployment_Type', script: [$class: 'GroovyScript', fallbackScript: [classpath: [], sandbox: false, script: ''], script: [classpath: [], sandbox: false, script: '''if((Deployment_Type.equals("Validate Only")) || (Deployment_Type.equals("Deploy Only")) || (Deployment_Type.equals("Delete and Deploy"))){
-	return[\'NoTestRun\',\'RunLocalTests\',\'RunSpecifiedTests\']
-	}
-	else {
-	return[\'Test not applicable while deleting components\']
-	}
-	''']]], [$class: 'DynamicReferenceParameter', choiceType: 'ET_FORMATTED_HTML', name: 'SpecifyTestClass', omitValueField: true, randomName: 'choice-parameter-6967722512000', referencedParameters: 'TESTLEVEL', script: [$class: 'GroovyScript', fallbackScript: [classpath: [], sandbox: false, script: ''], script: [classpath: [], sandbox: false, script: '''if(TESTLEVEL.equals("RunSpecifiedTests")){
-	inputBox="<textarea rows=\'9\' cols=\'70\' name=\'value\'></textarea>"
-	return inputBox
-	}''']]], gitParameter(branch: '', branchFilter: 'origin/(.*)', defaultValue: 'master', name: 'Branch', quickFilterEnabled: true, selectedValue: 'NONE', sortMode: 'ASCENDING_SMART', tagFilter: '*', type: 'PT_BRANCH')])])
-
 	try 
 	{
 		if ((params.PreviousCommitId != '') && (params.LatestCommitId != ''))
