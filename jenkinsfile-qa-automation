@@ -20,7 +20,7 @@ node {
 	stage('Git') {
 		script
             {
-			bat "echo %GIT_PREVIOUS_SUCCESSFUL_COMMIT%"
+			bat "echo $GIT_PREVIOUS_SUCCESSFUL_COMMIT"
 			}
 	}
 
