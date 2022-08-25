@@ -16,7 +16,8 @@ node {
     def Deployment_Type = 'Validate Only'
     /*def TESTLEVEL = 'NoTestRun'*/
     def Branch = 'dev'
-     stage('Git') {
+     
+	stage('Git') {
 	echo %GIT_PREVIOUS_SUCCESSFUL_COMMIT%
 	}
     stage('Clean Workspace') {
@@ -169,8 +170,8 @@ node {
 						to: '$DEFAULT_RECIPIENTS')
 						
 						error 'Metadata Validation Failed.'
-						}*/
-					} 
+						}
+					} */
 				
 				
    		}
@@ -222,7 +223,7 @@ node {
 			
 		}*/
 	
-	
+		}
 		
 	}
 
