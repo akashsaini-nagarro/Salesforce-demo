@@ -18,8 +18,12 @@ node {
     def Branch = 'dev'
      
 	stage('Git') {
-	echo %GIT_PREVIOUS_SUCCESSFUL_COMMIT%
+		script
+            {
+			bat "echo %GIT_PREVIOUS_SUCCESSFUL_COMMIT%"
+			}
 	}
+
     stage('Clean Workspace') {
         try {
             deleteDir()
